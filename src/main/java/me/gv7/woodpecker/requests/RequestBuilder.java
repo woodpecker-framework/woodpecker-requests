@@ -417,6 +417,12 @@ public final class RequestBuilder {
         }else if(!timeoutIsSet && timeoutConfig.getDefaultTimeout() != 0){
             timeout(timeoutConfig.getDefaultTimeout());
         }
+
+        // config useragent
+        String userAgent = HttpConfigUtil.getUserAgent();
+        if(userAgent != null){
+            userAgent(userAgent);
+        }
         return new Request(this);
     }
 

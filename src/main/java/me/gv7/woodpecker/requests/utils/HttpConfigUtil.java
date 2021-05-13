@@ -61,4 +61,17 @@ public class HttpConfigUtil {
         }
         return timeoutConfig;
     }
+
+
+    public static String getUserAgent(){
+        String userAgent = null;
+        try {
+            Class clazz = Class.forName("me.gv7.woodpecker.config.Config");
+            Method getUserAgent = clazz.getMethod("getUserAgent", new Class[0]);
+            userAgent = (String) getUserAgent.invoke(null);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return userAgent;
+    }
 }
