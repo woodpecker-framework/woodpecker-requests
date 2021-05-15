@@ -2,6 +2,7 @@ package me.gv7.woodpecker.requests;
 
 import me.gv7.woodpecker.requests.body.Part;
 import me.gv7.woodpecker.requests.body.RequestBody;
+import me.gv7.woodpecker.requests.config.CustomHttpHeaderConfig;
 import me.gv7.woodpecker.requests.config.ProxyConfig;
 import me.gv7.woodpecker.requests.config.TimeoutConfig;
 import me.gv7.woodpecker.requests.exception.RequestsException;
@@ -423,6 +424,22 @@ public final class RequestBuilder {
         if(userAgent != null){
             userAgent(userAgent);
         }
+
+        // config custom http header
+        CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigUtil.getCustomHttpHeaderConfig();
+        Map<String,String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
+        if(customHttpHeaderConfig.isOverwriteHttpHeader()){ // 强行覆盖
+            headers(customHttpHeaders);
+        }else{ // 不覆盖(暂时未实现)
+            Map<String,String> nonExistHttpHeaders = new HashMap<String,String>();
+            for(Map.Entry<String,String> header:customHttpHeaders.entrySet()){
+                String headerKey = header.getKey();
+                String headerValue = header.getValue();
+                nonExistHttpHeaders.put(headerKey,headerValue);
+            }
+            headers(nonExistHttpHeaders);
+        }
+
         return new Request(this);
     }
 

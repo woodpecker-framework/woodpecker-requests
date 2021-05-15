@@ -1,8 +1,10 @@
 package me.gv7.woodpecker.requests.utils;
 
+import me.gv7.woodpecker.requests.config.CustomHttpHeaderConfig;
 import me.gv7.woodpecker.requests.config.ProxyConfig;
 import me.gv7.woodpecker.requests.config.TimeoutConfig;
 import java.lang.reflect.Method;
+import java.util.Map;
 
 public class HttpConfigUtil {
     public static ProxyConfig getProxyConfig(){
@@ -73,5 +75,22 @@ public class HttpConfigUtil {
             e.printStackTrace();
         }
         return userAgent;
+    }
+
+    public static CustomHttpHeaderConfig getCustomHttpHeaderConfig(){
+        CustomHttpHeaderConfig customHttpHeaderConfig = new CustomHttpHeaderConfig();
+        try {
+            Class clazz = Class.forName("me.gv7.woodpecker.config.Config");
+            Method isIsOverwriteHttpHeader = clazz.getMethod("isOverwriteHttpHeader", new Class[0]);
+            boolean overwriteHttpHeader = (Boolean) isIsOverwriteHttpHeader.invoke(null);
+            customHttpHeaderConfig.setOverwriteHttpHeader(overwriteHttpHeader);
+
+            Method getCustomHttpHeaders = clazz.getMethod("getCustomHttpHeaders", new Class[0]);
+            Map<String,String> enableMandatoryTimeout = (Map<String,String>) getCustomHttpHeaders.invoke(null);
+            customHttpHeaderConfig.setCustomHttpHeaders(enableMandatoryTimeout);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return customHttpHeaderConfig;
     }
 }
