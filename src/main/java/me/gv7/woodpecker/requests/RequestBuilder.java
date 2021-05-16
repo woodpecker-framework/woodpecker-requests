@@ -428,6 +428,7 @@ public final class RequestBuilder {
         // config custom http header
         CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigUtil.getCustomHttpHeaderConfig();
         Map<String,String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
+        //customHttpHeaders.put("TestHeader","test");
         if(customHttpHeaderConfig.isOverwriteHttpHeader()){ // 强行覆盖
             headers(customHttpHeaders);
         }else{ // 不覆盖(暂时未实现)
@@ -435,12 +436,28 @@ public final class RequestBuilder {
             for(Map.Entry<String,String> header:customHttpHeaders.entrySet()){
                 String headerKey = header.getKey();
                 String headerValue = header.getValue();
-                nonExistHttpHeaders.put(headerKey,headerValue);
+                if(getHeader(headerKey) == null && !headerKey.equals("Host")) {//没有的头部
+                    nonExistHttpHeaders.put(headerKey, headerValue);
+                }
             }
-            headers(nonExistHttpHeaders);
+            if(nonExistHttpHeaders.size() != 0){
+                headers(nonExistHttpHeaders);
+            }
         }
 
         return new Request(this);
+    }
+
+    public Object getHeader(String headerKey){
+        Iterator<? extends Map.Entry<String,?>> iterator = this.headers.iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String,?> obj = iterator.next();
+            String keyName = obj.getKey();
+            if(keyName.equals(headerKey)){
+                return obj.getValue();
+            }
+        }
+        return null;
     }
 
     /**

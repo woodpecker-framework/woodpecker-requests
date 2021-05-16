@@ -142,8 +142,21 @@ public class RequestsTest {
 
     @Test
     public void sendHeaders() {
-        String text = Requests.get("http://127.0.0.1:8080/echo_header")
+        String text = Requests.get("http://gv7.me/echo_header")
                 .headers(new Header("Host", "www.test.com"), new Header("TestHeader", 1))
+                .proxy(Proxies.httpProxy("127.0.0.1",8080))
+                .send().readToText();
+        assertTrue(text.contains("Host: www.test.com"));
+        assertTrue(text.contains("TestHeader: 1"));
+    }
+
+    @Test
+    public void sendHeaders2() {
+        Map<String,String> headers = new HashMap<String,String>();
+        headers.put("TestHeader","1");
+        String text = Requests.get("http://gv7.me/echo_header")
+                .headers(headers)
+                .proxy(Proxies.httpProxy("127.0.0.1",8080))
                 .send().readToText();
         assertTrue(text.contains("Host: www.test.com"));
         assertTrue(text.contains("TestHeader: 1"));
