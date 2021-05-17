@@ -40,6 +40,9 @@ Table of Contents
 
 Requests is now in maven central repo.
 
+
+https://mvnrepository.com/artifact/me.gv7.woodpecker/woodpecker-requests
+
 ```xml
 <dependency>
     <groupId>me.gv7.woodpecker</groupId>
