@@ -7,7 +7,7 @@
     <groupId>me.gv7.woodpecker</groupId>
     <artifactId>woodpecker-requests</artifactId>
     <packaging>jar</packaging>
-    <version>0.1.0.beta3</version>
+    <version>0.1.0</version>
     <url>https://github.com/woodpecker-framework/woodpecker-requests</url>
 
     <parent>

@@ -28,6 +28,7 @@ import java.util.*;
  * @author Liu Dong
  */
 public final class RequestBuilder {
+    public static boolean DEBUG = true;
     String method = Methods.GET;
     URL url;
     Collection<? extends Map.Entry<String, ?>> headers = Lists.of();

@@ -142,6 +142,7 @@ public class RequestsTest {
 
     @Test
     public void sendHeaders() {
+        RequestBuilder.DEBUG = true;
         String text = Requests.get("http://gv7.me/echo_header")
                 .headers(new Header("Host", "www.test.com"), new Header("TestHeader", 1))
                 .proxy(Proxies.httpProxy("127.0.0.1",8080))
@@ -152,6 +153,7 @@ public class RequestsTest {
 
     @Test
     public void sendHeaders2() {
+        RequestBuilder.DEBUG = true;
         Map<String,String> headers = new HashMap<String,String>();
         headers.put("TestHeader","1");
         String text = Requests.get("http://gv7.me/echo_header")

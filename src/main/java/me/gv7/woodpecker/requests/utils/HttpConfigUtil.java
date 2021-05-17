@@ -1,41 +1,36 @@
 package me.gv7.woodpecker.requests.utils;
 
+import me.gv7.woodpecker.requests.RequestBuilder;
 import me.gv7.woodpecker.requests.config.CustomHttpHeaderConfig;
 import me.gv7.woodpecker.requests.config.ProxyConfig;
 import me.gv7.woodpecker.requests.config.TimeoutConfig;
-import java.lang.reflect.Method;
 import java.util.Map;
 
 public class HttpConfigUtil {
     public static ProxyConfig getProxyConfig(){
         ProxyConfig proxyConfig = new ProxyConfig();
         try {
-            Class clazz = Class.forName("me.gv7.woodpecker.config.Config");
-            Method isEnableProxy = clazz.getMethod("isEnableProxy", new Class[0]);
-            boolean enable = (Boolean) isEnableProxy.invoke(null);
+            Class clazz = Reflects.loadClass("me.gv7.woodpecker.config.Config");
+            boolean enable = (Boolean) Reflects.invokeStaticMethod(clazz,"isEnableProxy",new Class[0],new Object[0]);
             proxyConfig.setEnable(enable);
 
-            Method getProxyProtocol = clazz.getMethod("getProxyProtocol", new Class[0]);
-            String protocol = (String) getProxyProtocol.invoke(null);
+            String protocol = (String) Reflects.invokeStaticMethod(clazz,"getProxyProtocol",new Class[0],new Object[0]);
             proxyConfig.setProtocol(protocol);
 
-            Method getProxyHost = clazz.getMethod("getProxyHost", new Class[0]);
-            String host = (String) getProxyHost.invoke(null);
+            String host = (String)Reflects.invokeStaticMethod(clazz,"getProxyHost",new Class[0],new Object[0]);
             proxyConfig.setHost(host);
 
-            Method getProxyPort = clazz.getMethod("getProxyPort", new Class[0]);
-            int port = (Integer) getProxyPort.invoke(null);
+            int port = (Integer) Reflects.invokeStaticMethod(clazz,"getProxyPort",new Class[0],new Object[0]);
             proxyConfig.setPort(port);
 
-            Method getProxyUsername = clazz.getMethod("getProxyUsername", new Class[0]);
-            String username = (String) getProxyUsername.invoke(null);
+            String username = (String)Reflects.invokeStaticMethod(clazz,"getProxyUsername",new Class[0],new Object[0]);
             proxyConfig.setUsername(username);
 
-            Method getProxyPassword = clazz.getMethod("getProxyPassword", new Class[0]);
-            String password = (String) getProxyPassword.invoke(null);
+            String password = (String)Reflects.invokeStaticMethod(clazz,"getProxyPassword",new Class[0],new Object[0]);
             proxyConfig.setPassword(password);
         }catch (Exception e){
-            e.printStackTrace();
+            if(RequestBuilder.DEBUG)e.printStackTrace();
+            proxyConfig.setEnable(false);
         }
         return proxyConfig;
     }
@@ -43,23 +38,20 @@ public class HttpConfigUtil {
     public static TimeoutConfig getTimeoutConfig(){
         TimeoutConfig timeoutConfig = new TimeoutConfig();
         try {
-            Class clazz = Class.forName("me.gv7.woodpecker.config.Config");
-            Method getDefaultTimeout = clazz.getMethod("getDefaultTimeout", new Class[0]);
-            int defaultTimeout = (Integer) getDefaultTimeout.invoke(null);
+            Class clazz = Reflects.loadClass("me.gv7.woodpecker.config.Config");
+            int defaultTimeout = (Integer)Reflects.invokeStaticMethod(clazz,"getDefaultTimeout",new Class[0],new Object[0]);
             timeoutConfig.setDefaultTimeout(defaultTimeout);
 
-            Method isEnableMandatoryTimeout = clazz.getMethod("isEnableMandatoryTimeout", new Class[0]);
-            Boolean enableMandatoryTimeout = (Boolean) isEnableMandatoryTimeout.invoke(null);
+            Boolean enableMandatoryTimeout = (Boolean)Reflects.invokeStaticMethod(clazz,"isEnableMandatoryTimeout",new Class[0],new Object[0]);
             timeoutConfig.setEnableMandatoryTimeout(enableMandatoryTimeout);
 
-            Method getMandatoryTimeout = clazz.getMethod("getMandatoryTimeout", new Class[0]);
-            Integer mandatoryTimeout = (Integer) getMandatoryTimeout.invoke(null);
+            Integer mandatoryTimeout = (Integer)Reflects.invokeStaticMethod(clazz,"getMandatoryTimeout",new Class[0],new Object[0]);
             timeoutConfig.setMandatoryTimeout(mandatoryTimeout);
         }catch (Exception e){
             timeoutConfig.setDefaultTimeout(0);
             timeoutConfig.setEnableMandatoryTimeout(false);
             timeoutConfig.setMandatoryTimeout(0);
-            e.printStackTrace();
+            if(RequestBuilder.DEBUG)e.printStackTrace();
         }
         return timeoutConfig;
     }
@@ -68,11 +60,10 @@ public class HttpConfigUtil {
     public static String getUserAgent(){
         String userAgent = null;
         try {
-            Class clazz = Class.forName("me.gv7.woodpecker.config.Config");
-            Method getUserAgent = clazz.getMethod("getUserAgent", new Class[0]);
-            userAgent = (String) getUserAgent.invoke(null);
+            Class clazz = Reflects.loadClass("me.gv7.woodpecker.config.Config");
+            userAgent = (String)Reflects.invokeStaticMethod(clazz,"getUserAgent",new Class[0],new Object[0]);
         }catch (Exception e){
-            e.printStackTrace();
+            if(RequestBuilder.DEBUG)e.printStackTrace();
         }
         return userAgent;
     }
@@ -80,16 +71,14 @@ public class HttpConfigUtil {
     public static CustomHttpHeaderConfig getCustomHttpHeaderConfig(){
         CustomHttpHeaderConfig customHttpHeaderConfig = new CustomHttpHeaderConfig();
         try {
-            Class clazz = Class.forName("me.gv7.woodpecker.config.Config");
-            Method isIsOverwriteHttpHeader = clazz.getMethod("isOverwriteHttpHeader", new Class[0]);
-            boolean overwriteHttpHeader = (Boolean) isIsOverwriteHttpHeader.invoke(null);
+            Class clazz = Reflects.loadClass("me.gv7.woodpecker.config.Config");
+            boolean overwriteHttpHeader = (Boolean)Reflects.invokeStaticMethod(clazz,"isOverwriteHttpHeader",new Class[0],new Object[0]);
             customHttpHeaderConfig.setOverwriteHttpHeader(overwriteHttpHeader);
 
-            Method getCustomHttpHeaders = clazz.getMethod("getCustomHttpHeaders", new Class[0]);
-            Map<String,String> enableMandatoryTimeout = (Map<String,String>) getCustomHttpHeaders.invoke(null);
+            Map<String,String> enableMandatoryTimeout = (Map<String,String>) Reflects.invokeStaticMethod(clazz,"getCustomHttpHeaders",new Class[0],new Object[0]);
             customHttpHeaderConfig.setCustomHttpHeaders(enableMandatoryTimeout);
         }catch (Exception e){
-            e.printStackTrace();
+            if(RequestBuilder.DEBUG)e.printStackTrace();
         }
         return customHttpHeaderConfig;
     }
