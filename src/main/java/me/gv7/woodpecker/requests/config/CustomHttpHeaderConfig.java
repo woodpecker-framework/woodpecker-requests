@@ -1,25 +1,24 @@
 package me.gv7.woodpecker.requests.config;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 public class CustomHttpHeaderConfig {
-    private static Map<String,String> CUSTOM_HTTP_HEADERS = new HashMap<String,String>();
-    private static boolean overwriteHttpHeader = false;
+    private LinkedHashMap<String,String> customHttpHeaders = new LinkedHashMap<String,String>();
+    private boolean overwriteHttpHeader = false;
 
-    public static Map<String, String> getCustomHttpHeaders() {
-        return CUSTOM_HTTP_HEADERS;
+    public LinkedHashMap<String, String> getCustomHttpHeaders() {
+        return customHttpHeaders;
     }
 
-    public static void setCustomHttpHeaders(Map<String, String> customHttpHeaders) {
-        CUSTOM_HTTP_HEADERS = customHttpHeaders;
+    public void setCustomHttpHeaders(LinkedHashMap<String, String> customHttpHeaders) {
+        this.customHttpHeaders = customHttpHeaders;
     }
 
-    public static boolean isOverwriteHttpHeader() {
+    public boolean isOverwriteHttpHeader() {
         return overwriteHttpHeader;
     }
 
-    public static void setOverwriteHttpHeader(boolean overwriteHttpHeader) {
-        CustomHttpHeaderConfig.overwriteHttpHeader = overwriteHttpHeader;
+    public void setOverwriteHttpHeader(boolean overwriteHttpHeader) {
+        this.overwriteHttpHeader = overwriteHttpHeader;
     }
 }

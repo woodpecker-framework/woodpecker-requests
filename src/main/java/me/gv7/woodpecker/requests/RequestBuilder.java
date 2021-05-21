@@ -428,7 +428,7 @@ public final class RequestBuilder {
 
         // config custom http header
         CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigUtil.getCustomHttpHeaderConfig();
-        Map<String,String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
+        LinkedHashMap<String,String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
         //customHttpHeaders.put("TestHeader","test");
         if(customHttpHeaderConfig.isOverwriteHttpHeader()){ // 强行覆盖
             headers(customHttpHeaders);
