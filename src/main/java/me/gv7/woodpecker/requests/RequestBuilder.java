@@ -29,6 +29,7 @@ import java.util.*;
  */
 public final class RequestBuilder {
     public static boolean DEBUG = true;
+    private boolean ignoreHttpConfig = false;
     String method = Methods.GET;
     URL url;
     Collection<? extends Map.Entry<String, ?>> headers = Lists.of();
@@ -401,49 +402,60 @@ public final class RequestBuilder {
         return this;
     }
 
+    /**
+     * Set ignore httpconfig
+     * @param ignoreHttpConfig
+     * @return
+     */
+    public RequestBuilder ignoreHttpConfig(boolean ignoreHttpConfig) {
+        this.ignoreHttpConfig = ignoreHttpConfig;
+        return this;
+    }
+
     Request build() {
-        // config proxy
-        ProxyConfig proxyConfig = HttpConfigManager.getProxyConfig();
-        if(proxyConfig.isEnable()){
-            if(proxyConfig.getProtocol().equals("http")){
-                proxy(Proxies.httpProxy(proxyConfig.getHost(), proxyConfig.getPort()));
-            }else if(proxyConfig.getProtocol().equals("socks")){
-                proxy(Proxies.socksProxy(proxyConfig.getHost(), proxyConfig.getPort()));
+        if(!ignoreHttpConfig) {
+            // config proxy
+            ProxyConfig proxyConfig = HttpConfigManager.getProxyConfig();
+            if (proxyConfig.isEnable()) {
+                if (proxyConfig.getProtocol().equals("http")) {
+                    proxy(Proxies.httpProxy(proxyConfig.getHost(), proxyConfig.getPort()));
+                } else if (proxyConfig.getProtocol().equals("socks")) {
+                    proxy(Proxies.socksProxy(proxyConfig.getHost(), proxyConfig.getPort()));
+                }
+            }
+
+            // config timeout
+            TimeoutConfig timeoutConfig = HttpConfigManager.getTimeoutConfig();
+            if (timeoutConfig.isEnableMandatoryTimeout()) {
+                timeout(timeoutConfig.getMandatoryTimeout());
+            } else if (!timeoutIsSet && timeoutConfig.getDefaultTimeout() != 0) {
+                timeout(timeoutConfig.getDefaultTimeout());
+            }
+
+            // config useragent
+            String userAgent = HttpConfigManager.getUserAgent();
+            if (userAgent != null) {
+                userAgent(userAgent);
+            }
+
+            // config custom http header
+            CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigManager.getCustomHttpHeaderConfig();
+            LinkedHashMap<String, String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
+            //customHttpHeaders.put("TestHeader","test");
+            if (customHttpHeaderConfig.isOverwriteHttpHeader()) { // 强行覆盖旧Http头
+                Map<String, Object> oldHeaders = getHeaders();
+                Map<String, Object> newHeaders = new HashMap<String, Object>();
+                newHeaders.putAll(oldHeaders);
+                newHeaders.putAll(customHttpHeaders);
+                headers(newHeaders);
+            } else { // 不覆盖(暂时未实现)
+                customHttpHeaders.remove("Host"); // 改模式不能覆盖Host头
+                LinkedHashMap<String, Object> newHeaders = new LinkedHashMap<String, Object>();
+                newHeaders.putAll(customHttpHeaders);
+                newHeaders.putAll(getHeaders());
+                headers(newHeaders);
             }
         }
-
-        // config timeout
-        TimeoutConfig timeoutConfig = HttpConfigManager.getTimeoutConfig();
-        if(timeoutConfig.isEnableMandatoryTimeout()){
-            timeout(timeoutConfig.getMandatoryTimeout());
-        }else if(!timeoutIsSet && timeoutConfig.getDefaultTimeout() != 0){
-            timeout(timeoutConfig.getDefaultTimeout());
-        }
-
-        // config useragent
-        String userAgent = HttpConfigManager.getUserAgent();
-        if(userAgent != null){
-            userAgent(userAgent);
-        }
-
-        // config custom http header
-        CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigManager.getCustomHttpHeaderConfig();
-        LinkedHashMap<String,String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
-        //customHttpHeaders.put("TestHeader","test");
-        if(customHttpHeaderConfig.isOverwriteHttpHeader()){ // 强行覆盖旧Http头
-            Map<String,Object> oldHeaders = getHeaders();
-            Map<String,Object> newHeaders = new HashMap<String,Object>();
-            newHeaders.putAll(oldHeaders);
-            newHeaders.putAll(customHttpHeaders);
-            headers(newHeaders);
-        }else{ // 不覆盖(暂时未实现)
-            customHttpHeaders.remove("Host"); // 改模式不能覆盖Host头
-            LinkedHashMap<String,Object> newHeaders = new LinkedHashMap<String,Object>();
-            newHeaders.putAll(customHttpHeaders);
-            newHeaders.putAll(getHeaders());
-            headers(newHeaders);
-        }
-
         return new Request(this);
     }
 

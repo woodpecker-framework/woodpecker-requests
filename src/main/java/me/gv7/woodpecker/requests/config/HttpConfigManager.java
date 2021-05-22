@@ -20,15 +20,18 @@ public class HttpConfigManager {
         proxyConfig.setPassword(password);
     }
 
+
     public static ProxyConfig getProxyConfig() {
         return proxyConfig;
     }
+
 
     public static void setTimeoutConfig(int defaultTimeout,boolean enableMandatoryTimeout,int mandatoryTimeout){
         timeoutConfig.setDefaultTimeout(defaultTimeout);
         timeoutConfig.setEnableMandatoryTimeout(enableMandatoryTimeout);
         timeoutConfig.setMandatoryTimeout(mandatoryTimeout);
     }
+
 
     public static TimeoutConfig getTimeoutConfig() {
         return timeoutConfig;
@@ -38,9 +41,11 @@ public class HttpConfigManager {
         userAgentConfig.setUserAgentList(userAgentList);
     }
 
+
     public static UserAgentConfig getUserAgentConfig(){
         return userAgentConfig;
     }
+
 
     public static String getUserAgent(){
         LinkedList<String> userAgentList = userAgentConfig.getUserAgentList();
@@ -51,10 +56,12 @@ public class HttpConfigManager {
         return userAgentList.get(n);
     }
 
+
     public static void setCustomHttpHeaderConfig(LinkedHashMap<String,String> customHttpHeaders,boolean overwriteHttpHeader){
         customHttpHeaderConfig.setCustomHttpHeaders(customHttpHeaders);
         customHttpHeaderConfig.setOverwriteHttpHeader(overwriteHttpHeader);
     }
+
 
     public static CustomHttpHeaderConfig getCustomHttpHeaderConfig() {
         return customHttpHeaderConfig;
