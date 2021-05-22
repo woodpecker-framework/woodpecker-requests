@@ -1,14 +1,11 @@
 package me.gv7.woodpecker.requests;
 
-import me.gv7.woodpecker.requests.config.CustomHttpHeaderConfig;
-import me.gv7.woodpecker.requests.utils.HttpConfigUtil;
+import me.gv7.woodpecker.requests.config.HttpConfigManager;
 import net.dongliu.commons.collection.Lists;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -56,15 +53,17 @@ public class HeadersTest {
         newHeaders.put("Host","overwrite.com");
         newHeaders.put("aaa","overwrite");
         newHeaders.put("bbb","bbb");
-        HttpConfigUtil.setCustomHttpHeaderConfig(newHeaders,false);
+        HttpConfigManager.setCustomHttpHeaderConfig(newHeaders,false);
         LinkedHashMap<String,String> headers = new LinkedHashMap<>();
         headers.put("aaa","aaa");
+        headers.put("ccc","ccc");
         RequestBuilder requestBuilder = Requests.get("http://woodpecker.gv7.me/index").headers(headers);
         requestBuilder.build();
 
         assertEquals(null,requestBuilder.getHeader("Host"));
         assertEquals("aaa",requestBuilder.getHeader("aaa"));
         assertEquals("bbb",requestBuilder.getHeader("bbb"));
+        assertEquals("ccc",requestBuilder.getHeader("ccc"));
     }
 
     /**
@@ -76,14 +75,16 @@ public class HeadersTest {
         newHeaders.put("Host","overwrite.com");
         newHeaders.put("aaa","overwrite");
         newHeaders.put("bbb","bbb");
-        HttpConfigUtil.setCustomHttpHeaderConfig(newHeaders,true);
+        HttpConfigManager.setCustomHttpHeaderConfig(newHeaders,true);
         LinkedHashMap<String,String> headers = new LinkedHashMap<>();
         headers.put("aaa","aaa");
+        headers.put("ccc","ccc");
         RequestBuilder requestBuilder = Requests.get("http://woodpecker.gv7.me/index").headers(headers);
         requestBuilder.build();
 
         assertEquals("overwrite.com",requestBuilder.getHeader("Host"));
         assertEquals("overwrite",requestBuilder.getHeader("aaa"));
         assertEquals("bbb",requestBuilder.getHeader("bbb"));
+        assertEquals("ccc",requestBuilder.getHeader("ccc")); // 测试是否用户未被覆盖的header否否保持
     }
 }

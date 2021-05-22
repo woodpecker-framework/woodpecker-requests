@@ -1,15 +1,10 @@
-package me.gv7.woodpecker.requests.utils;
-
-import me.gv7.woodpecker.requests.config.CustomHttpHeaderConfig;
-import me.gv7.woodpecker.requests.config.ProxyConfig;
-import me.gv7.woodpecker.requests.config.TimeoutConfig;
-import me.gv7.woodpecker.requests.config.UserAgentConfig;
+package me.gv7.woodpecker.requests.config;
 
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.Random;
 
-public class HttpConfigUtil {
+public class HttpConfigManager {
     private static ProxyConfig proxyConfig = new ProxyConfig();
     private static TimeoutConfig timeoutConfig = new TimeoutConfig();
     private static UserAgentConfig userAgentConfig = new UserAgentConfig();

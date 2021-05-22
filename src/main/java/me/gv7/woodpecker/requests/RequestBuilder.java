@@ -9,7 +9,7 @@ import me.gv7.woodpecker.requests.exception.RequestsException;
 import me.gv7.woodpecker.requests.executor.HttpExecutor;
 import me.gv7.woodpecker.requests.executor.RequestExecutorFactory;
 import me.gv7.woodpecker.requests.executor.SessionContext;
-import me.gv7.woodpecker.requests.utils.HttpConfigUtil;
+import me.gv7.woodpecker.requests.config.HttpConfigManager;
 import net.dongliu.commons.collection.Lists;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
@@ -403,7 +403,7 @@ public final class RequestBuilder {
 
     Request build() {
         // config proxy
-        ProxyConfig proxyConfig = HttpConfigUtil.getProxyConfig();
+        ProxyConfig proxyConfig = HttpConfigManager.getProxyConfig();
         if(proxyConfig.isEnable()){
             if(proxyConfig.getProtocol().equals("http")){
                 proxy(Proxies.httpProxy(proxyConfig.getHost(), proxyConfig.getPort()));
@@ -413,7 +413,7 @@ public final class RequestBuilder {
         }
 
         // config timeout
-        TimeoutConfig timeoutConfig = HttpConfigUtil.getTimeoutConfig();
+        TimeoutConfig timeoutConfig = HttpConfigManager.getTimeoutConfig();
         if(timeoutConfig.isEnableMandatoryTimeout()){
             timeout(timeoutConfig.getMandatoryTimeout());
         }else if(!timeoutIsSet && timeoutConfig.getDefaultTimeout() != 0){
@@ -421,13 +421,13 @@ public final class RequestBuilder {
         }
 
         // config useragent
-        String userAgent = HttpConfigUtil.getUserAgent();
+        String userAgent = HttpConfigManager.getUserAgent();
         if(userAgent != null){
             userAgent(userAgent);
         }
 
         // config custom http header
-        CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigUtil.getCustomHttpHeaderConfig();
+        CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigManager.getCustomHttpHeaderConfig();
         LinkedHashMap<String,String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
         //customHttpHeaders.put("TestHeader","test");
         if(customHttpHeaderConfig.isOverwriteHttpHeader()){ // 强行覆盖旧Http头
@@ -435,7 +435,7 @@ public final class RequestBuilder {
             Map<String,Object> newHeaders = new HashMap<String,Object>();
             newHeaders.putAll(oldHeaders);
             newHeaders.putAll(customHttpHeaders);
-            headers(customHttpHeaders);
+            headers(newHeaders);
         }else{ // 不覆盖(暂时未实现)
             customHttpHeaders.remove("Host"); // 改模式不能覆盖Host头
             LinkedHashMap<String,Object> newHeaders = new LinkedHashMap<String,Object>();
