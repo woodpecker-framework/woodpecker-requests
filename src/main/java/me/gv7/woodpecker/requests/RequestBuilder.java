@@ -430,20 +430,18 @@ public final class RequestBuilder {
         CustomHttpHeaderConfig customHttpHeaderConfig = HttpConfigUtil.getCustomHttpHeaderConfig();
         LinkedHashMap<String,String> customHttpHeaders = customHttpHeaderConfig.getCustomHttpHeaders();
         //customHttpHeaders.put("TestHeader","test");
-        if(customHttpHeaderConfig.isOverwriteHttpHeader()){ // 强行覆盖
+        if(customHttpHeaderConfig.isOverwriteHttpHeader()){ // 强行覆盖旧Http头
+            Map<String,Object> oldHeaders = getHeaders();
+            Map<String,Object> newHeaders = new HashMap<String,Object>();
+            newHeaders.putAll(oldHeaders);
+            newHeaders.putAll(customHttpHeaders);
             headers(customHttpHeaders);
         }else{ // 不覆盖(暂时未实现)
-            Map<String,String> nonExistHttpHeaders = new HashMap<String,String>();
-            for(Map.Entry<String,String> header:customHttpHeaders.entrySet()){
-                String headerKey = header.getKey();
-                String headerValue = header.getValue();
-                if(getHeader(headerKey) == null && !headerKey.equals("Host")) {//没有的头部
-                    nonExistHttpHeaders.put(headerKey, headerValue);
-                }
-            }
-            if(nonExistHttpHeaders.size() != 0){
-                headers(nonExistHttpHeaders);
-            }
+            customHttpHeaders.remove("Host"); // 改模式不能覆盖Host头
+            LinkedHashMap<String,Object> newHeaders = new LinkedHashMap<String,Object>();
+            newHeaders.putAll(customHttpHeaders);
+            newHeaders.putAll(getHeaders());
+            headers(newHeaders);
         }
 
         return new Request(this);
@@ -459,6 +457,18 @@ public final class RequestBuilder {
             }
         }
         return null;
+    }
+
+    public LinkedHashMap<String,Object> getHeaders(){
+        LinkedHashMap<String,Object> headers = new LinkedHashMap<String,Object>();
+        Iterator<? extends Map.Entry<String,?>> iterator = this.headers.iterator();
+        while (iterator.hasNext()){
+            Map.Entry<String,?> obj = iterator.next();
+            String keyName = obj.getKey();
+            Object value = obj.getValue();
+            headers.put(keyName,value);
+        }
+        return headers;
     }
 
     /**
