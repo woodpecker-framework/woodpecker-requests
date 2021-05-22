@@ -44,10 +44,10 @@ public final class RequestBuilder {
     int connectTimeout = DefaultSettings.CONNECT_TIMEOUT;
     @Nullable
     Proxy proxy;
-    boolean followRedirect = true;
+    boolean followRedirect = false;
     int maxRedirectCount = 5;
     boolean acceptCompress = true;
-    boolean verify = true;
+    boolean verify = false;
     @Nullable
     BasicAuth basicAuth;
     @Nullable
