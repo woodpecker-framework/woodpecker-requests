@@ -9,7 +9,8 @@
 </p>
 
 
-`woodpecker-requests`是基于 [requests](https://github.com/hsiafan/requests) 为woodpecker框架定制开发的httpclient库,目的是编写插件时能拥有像python requests一样的便利。
+`woodpecker-requests`是基于 [requests](https://github.com/hsiafan/requests) 为woodpecker框架定制开发的httpclient库,目的是编写插件时能拥有像python requests一样的便利。特点为可以全局设置代理、全局设置UA等
+
 
 ----
 
@@ -51,6 +52,50 @@ https://mvnrepository.com/artifact/me.gv7.woodpecker/woodpecker-requests
 </dependency>
 ```
 
+# Global Config
+
+### global proxy
+
+```java
+public static boolean enable = false; // open proxy or close
+public static String protocol = "http"; // http or socks
+public static String host = "127.0.0.1";
+public static int port = 8080;
+public static String username; // socks proxy user,can set null
+public static String password; // socks proxy pass,can set null
+HttpConfigManager.setProxyConfig(enable
+                ,protocol
+                ,host
+                ,port
+                ,username
+                ,password);
+    }
+```
+
+### global user-agent
+
+```java
+LinkedList<String> uaList = new LinkedList<>();
+// set greater than 2 will random choise.
+uaList.add("Mozilla/5.0 (Android; Mobile; rv:14.0) Gecko/14.0 Firefox/14.0");
+uaList.add("Mozilla/5.0 (Android; Tablet; rv:14.0) Gecko/14.0 Firefox/14.0");
+HttpConfigManager.setUserAgentConfig(uaList);
+```
+
+### global time out
+
+```java
+int time = 5000; // !!!attention!!! millisecond
+boolean enableMandatoryTimeout = false; // ignored user set
+int mandatoryTimeout = 1;
+HttpConfigManager.setTimeoutConfig(time
+                        ,enableMandatoryTimeout
+                        ,mandatoryTimeout);
+```
+**enableMandatoryTimeout** will ignore user set,such us:
+```java
+Requests.get("http://woodpecker.gv7.me/").timeout(10000).send() // timeout will be replaced by mandatoryTimeout
+```
 # Usage
 
 ## Simple Case
