@@ -104,14 +104,20 @@ public final class RequestBuilder {
 
     /**
      * Set request headers.
+     * 2021.10.24 解决设置两次headers覆盖的问题
      */
     public RequestBuilder headers(Collection<? extends Map.Entry<String, ?>> headers) {
-        this.headers = headers;
+        Map<String, Object> newHeaders = new HashMap<>(getHeaders());
+        for (Map.Entry<String, ?> next : headers) {
+            newHeaders.put(next.getKey(), next.getValue());
+        }
+        this.headers = newHeaders.entrySet();
         return this;
     }
 
     /**
      * Set request headers.
+     * 2021.10.24 解决设置两次headers覆盖的问题| 直接调用上方headers,不用修改
      */
     @SafeVarargs
     public final RequestBuilder headers(Map.Entry<String, ?>... headers) {
@@ -121,9 +127,12 @@ public final class RequestBuilder {
 
     /**
      * Set request headers.
+     * 2021.10.24 解决设置两次headers覆盖的问题
      */
     public final RequestBuilder headers(Map<String, ?> map) {
-        this.headers = map.entrySet();
+        Map<String, Object> newHeaders = new HashMap<>(getHeaders());
+        newHeaders.putAll(map);
+        this.headers = newHeaders.entrySet();
         return this;
     }
 

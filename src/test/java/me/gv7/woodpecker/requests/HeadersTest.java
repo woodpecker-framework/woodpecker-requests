@@ -4,7 +4,10 @@ import me.gv7.woodpecker.requests.config.HttpConfigManager;
 import net.dongliu.commons.collection.Lists;
 import org.junit.Test;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import static org.junit.Assert.assertEquals;
@@ -87,4 +90,28 @@ public class HeadersTest {
         assertEquals("bbb",requestBuilder.getHeader("bbb"));
         assertEquals("ccc",requestBuilder.getHeader("ccc")); // 测试是否用户未被覆盖的header否否保持
     }
+
+    /**
+     * 测试新增多个header是否会覆盖
+     */
+    @Test
+    public void setManyHeader(){
+        HashMap<String, String> h = new HashMap<>();
+        h.put("header1","header1");
+        HashMap<String, String> h2 = new HashMap<String, String>();
+        h2.put("header2","header2");
+        HashMap<String, String> h3 = new HashMap<String, String>();
+        h3.put("header3","header3");
+        String url = "http://www.baidu.com";
+        RequestBuilder requestBuilder = Requests.get(url)
+                .headers(h) // header1
+                .headers(h2) // header2
+                .headers(h3.entrySet()) // header3
+                .headers(Lists.of(new Header("header4","header4"))); // header4
+        assertEquals("header1",requestBuilder.getHeader("header1"));
+        assertEquals("header2",requestBuilder.getHeader("header2"));
+        assertEquals("header3",requestBuilder.getHeader("header3"));
+        assertEquals("header4",requestBuilder.getHeader("header4"));
+    }
+
 }
