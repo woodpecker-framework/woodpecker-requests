@@ -236,10 +236,17 @@ class URLConnectionExecutor implements HttpExecutor {
                 continue;
             }
             headerList.add(new Header(key, value));
-            if (key.equalsIgnoreCase(NAME_SET_COOKIE)) {
-                Cookie c = Cookies.parseCookie(value, host, Cookies.calculatePath(url.getPath()));
-                if (c != null) {
-                    cookies.add(c);
+            /*
+             *  2021.11.1 @Ppsoft1991
+             *  解决如果CookieHandler存在,cookie会重复的bug
+             *  套了层判断，如果存在CookieHandler,则由系统的CookieManager对cookie进行管理
+             * */
+            if (CookieHandler.getDefault()==null) {
+                if (key.equalsIgnoreCase(NAME_SET_COOKIE)) {
+                    Cookie c = Cookies.parseCookie(value, host, Cookies.calculatePath(url.getPath()));
+                    if (c != null) {
+                        cookies.add(c);
+                    }
                 }
             }
         }
