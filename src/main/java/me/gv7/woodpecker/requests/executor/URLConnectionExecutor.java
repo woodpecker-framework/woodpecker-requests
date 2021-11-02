@@ -18,10 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.*;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static me.gv7.woodpecker.requests.HttpHeaders.*;
 import static me.gv7.woodpecker.requests.StatusCodes.*;
@@ -95,7 +92,12 @@ class URLConnectionExecutor implements HttpExecutor {
         URL url = URLUtils.joinUrl(request.url(), URLUtils.toStringParameters(request.params()), charset);
         @Nullable RequestBody<?> body = request.body();
         CookieJar cookieJar;
-        if (request.sessionContext() != null) {
+        /*
+         *  2021.11.2 @Ppsoft1991
+         *  解决如果CookieHandler存在,cookie会重复的bug
+         *  加了层判断，如果存在CookieHandler,则由系统的CookieManager对cookie进行管理
+         * */
+        if (request.sessionContext() != null && CookieHandler.getDefault()==null) {
             cookieJar = request.sessionContext().cookieJar();
         } else {
             cookieJar = NopCookieJar.instance;
@@ -222,25 +224,32 @@ class URLConnectionExecutor implements HttpExecutor {
         // headers and cookies
         List<Header> headerList = new ArrayList<>();
         List<Cookie> cookies = new ArrayList<>();
-        int index = 0;
-        while (true) {
-            String key = conn.getHeaderFieldKey(index);
-            String value = conn.getHeaderField(index);
+        /*
+         *  2021.11.2 @Ppsoft
+         *  getHeaderField会走到filter导致HttpOnly Cookie无法获取，所以替换为getHeaderFields来绕过
+         * */
+        Map<String, List<String>> headerFields = conn.getHeaderFields();
+        for (Map.Entry<String, List<String>> next : headerFields.entrySet()) {
+            String key = next.getKey();
+            List<String> value = next.getValue();
             if (value == null) {
                 break;
             }
-            index++;
             //status line
             if (key == null) {
-                statusLine = value;
+                statusLine = value.get(0);
                 continue;
             }
-            headerList.add(new Header(key, value));
-            if (key.equalsIgnoreCase(NAME_SET_COOKIE)) {
-                Cookie c = Cookies.parseCookie(value, host, Cookies.calculatePath(url.getPath()));
-                if (c != null) {
-                    cookies.add(c);
+            // cookie
+            if (value.size() > 1) {
+                for (String cookie : value) {
+                    Cookie c = Cookies.parseCookie(cookie, host, Cookies.calculatePath(url.getPath()));
+                    if (c != null) {
+                        cookies.add(c);
+                    }
                 }
+            } else {
+                headerList.add(new Header(key, value.get(0)));
             }
         }
         Headers headers = new Headers(headerList);
