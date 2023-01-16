@@ -85,6 +85,24 @@ public class Requests {
         return newRequest(Methods.PATCH, url);
     }
 
+    public static RequestBuilder method(String method,String url) throws Exception {
+        if(method.equals("GET")){
+            return newRequest(Methods.GET, url);
+        }else if(method.equals("POST")){
+            return newRequest(Methods.POST, url);
+        }else if(method.equals("PUT")){
+            return newRequest(Methods.PUT, url);
+        }else if(method.equals("DELETE")){
+            return newRequest(Methods.DELETE, url);
+        }else if(method.equals("HEAD")){
+            return newRequest(Methods.HEAD, url);
+        }else if(method.equals("PATCH")){
+            return newRequest(Methods.PATCH, url);
+        }else{
+            throw new Exception(String.format("%s is an unknown method",method));
+        }
+    }
+
     /**
      * Create new request with method and url
      */

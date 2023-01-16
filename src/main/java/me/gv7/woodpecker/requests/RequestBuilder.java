@@ -422,7 +422,7 @@ public final class RequestBuilder {
     }
 
     Request build() {
-        if(!ignoreHttpConfig) {
+        if(!ignoreHttpConfig && proxy == null) {
             // config proxy
             ProxyConfig proxyConfig = HttpConfigManager.getProxyConfig();
             if (proxyConfig.isEnable()) {

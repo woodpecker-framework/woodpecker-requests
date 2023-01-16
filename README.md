@@ -71,6 +71,11 @@ HttpConfigManager.setProxyConfig(enable
                 ,password);
     }
 ```
+### Global proxies are not used
+
+```java
+Requests.method("GET","http://wwww.baidu.com/").proxy(Proxy.NO_PROXY).send();
+```
 
 ### global user-agent
 
