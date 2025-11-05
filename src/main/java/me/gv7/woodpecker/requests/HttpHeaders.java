@@ -22,4 +22,6 @@ public class HttpHeaders {
     public static final String CONTENT_TYPE_TEXT = "plain/text";
     public static final String CONTENT_TYPE_BINARY = "application/octet-stream";
 
+    public static final String NAME_HOST = "Host";
+
 }

@@ -50,7 +50,7 @@ public class RawResponse extends AbstractResponse implements AutoCloseable {
 
     // Only for internal use. Do not call this method.
     public RawResponse(String method, String url, int statusCode, String statusLine, List<Cookie> cookies, Headers headers,
-                       InputStream input, HttpURLConnection conn) {
+                       InputStream input, Closeable conn) {
         super(url, statusCode, cookies, headers);
         this.method = method;
         this.statusLine = statusLine;

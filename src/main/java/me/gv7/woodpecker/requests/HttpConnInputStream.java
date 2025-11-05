@@ -1,5 +1,6 @@
 package me.gv7.woodpecker.requests;
 
+import java.io.Closeable;
 import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,9 +11,9 @@ import java.net.HttpURLConnection;
  */
 class HttpConnInputStream extends FilterInputStream {
 
-    private final HttpURLConnection conn;
+    private final Closeable conn;
 
-    protected HttpConnInputStream(InputStream in, HttpURLConnection conn) {
+    protected HttpConnInputStream(InputStream in, Closeable conn) {
         super(in);
         this.conn = conn;
     }
@@ -22,7 +23,8 @@ class HttpConnInputStream extends FilterInputStream {
         try {
             super.close();
         } finally {
-            conn.disconnect();
+            if (conn != null)
+                conn.close();
         }
 
     }

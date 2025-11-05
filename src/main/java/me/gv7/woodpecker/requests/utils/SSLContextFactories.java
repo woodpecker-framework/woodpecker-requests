@@ -15,13 +15,13 @@ import java.util.concurrent.ConcurrentMap;
  *
  * @author Liu Dong
  */
-public class SSLSocketFactories {
+public class SSLContextFactories {
 
     // To reuse the connection, settings on the underlying socket must use the exact same objects.
 
-    private static final SSLSocketFactory sslSocketFactoryLazy = _getTrustAllSSLSocketFactory();
+    private static final SSLContext sslContextLazy = _getTrustAllSSLContext();
 
-    public static SSLSocketFactory _getTrustAllSSLSocketFactory() {
+    public static SSLContext _getTrustAllSSLContext() {
         TrustManager trustManager = new TrustAllTrustManager();
         SSLContext sslContext;
         try {
@@ -31,17 +31,17 @@ public class SSLSocketFactories {
             throw new RequestsException(e);
         }
 
-        return sslContext.getSocketFactory();
+        return sslContext;
     }
 
 
-    public static SSLSocketFactory getTrustAllSSLSocketFactory() {
-        return sslSocketFactoryLazy;
+    public static SSLContext getTrustAllSSLContext() {
+        return sslContextLazy;
     }
 
-    private static final ConcurrentMap<KeyStore, SSLSocketFactory> map = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<KeyStore, SSLContext> map = new ConcurrentHashMap<>();
 
-    private static SSLSocketFactory _getCustomSSLSocketFactory(KeyStore keyStore) {
+    private static SSLContext _getCustomSSLContext(KeyStore keyStore) {
         TrustManager trustManager = new CustomCertTrustManager(keyStore);
         SSLContext sslContext;
         try {
@@ -51,12 +51,12 @@ public class SSLSocketFactories {
             throw new RequestsException(e);
         }
 
-        return sslContext.getSocketFactory();
+        return sslContext;
     }
 
-    public static SSLSocketFactory getCustomTrustSSLSocketFactory(KeyStore keyStore) {
+    public static SSLContext getCustomTrustSSLContext(KeyStore keyStore) {
         if (!map.containsKey(keyStore)) {
-            map.put(keyStore, _getCustomSSLSocketFactory(keyStore));
+            map.put(keyStore, _getCustomSSLContext(keyStore));
         }
         return map.get(keyStore);
     }

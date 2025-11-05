@@ -1,9 +1,7 @@
-<p align="center">
-  <h1>woodpecker-requests</h1>
-</p>
+<h1 align="center">woodpecker-requests</h1>
 
 <p align="center">
-  <img title="portainer" src='https://img.shields.io/badge/version-0.1.0.beta1-brightgreen.svg' />
+  <img title="portainer" src='https://img.shields.io/badge/version-0.3.0-brightgreen.svg' />
   <img title="portainer" src='https://img.shields.io/badge/java-1.8.*-yellow.svg' />
   <img title="portainer" src='https://img.shields.io/badge/license-MIT-red.svg' />
 </p>

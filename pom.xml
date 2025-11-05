@@ -7,41 +7,7 @@
     <groupId>me.gv7.woodpecker</groupId>
     <artifactId>woodpecker-requests</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.1</version>
-    <url>https://github.com/woodpecker-framework/woodpecker-requests</url>
-
-    <parent>
-        <groupId>org.sonatype.oss</groupId>
-        <artifactId>oss-parent</artifactId>
-        <version>7</version>
-    </parent>
-
-    <description>woodpecker-requests are secondary development based on https://github.com/hsiafan/requests, as the woodpecker framework tailored httpclient</description>
-
-    <!--licenses信息-->
-    <licenses>
-        <license>
-            <name>MIT License</name>
-            <url>http://www.opensource.org/licenses/mit-license.php</url>
-        </license>
-    </licenses>
-
-    <!--scm信息-->
-    <scm>
-        <connection>scm:git:git://github.com/woodpecker-framework/woodpecker-requests.git</connection>
-        <developerConnection>scm:git:ssh://github.com:woodpecker-framework/woodpecker-requests.git</developerConnection>
-        <url>http://github.com/woodpecker-framework/woodpecker-requests/tree/master</url>
-    </scm>
-
-    <!--发布者信息-->
-    <developers>
-        <developer>
-            <name>c0ny1</name>
-            <email>guishuox@gmail.com</email>
-            <organization>woodpecker-framework</organization>
-            <organizationUrl>http://woodpecker.gv7.me</organizationUrl>
-        </developer>
-    </developers>
+    <version>0.3.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -87,13 +53,6 @@
             <version>${jackson.version}</version>
             <optional>true</optional>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba</groupId>-->
-<!--            <artifactId>fastjson</artifactId>-->
-<!--            <version>${fastjson.version}</version>-->
-<!--            <optional>true</optional>-->
-<!--        </dependency>-->
-
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -106,25 +65,17 @@
             <version>9.3.13.v20161014</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.5</version>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- doc plugin,Maven API文档生成插件 -->
-            <!--            <plugin>-->
-            <!--                <groupId>org.apache.maven.plugins</groupId>-->
-            <!--                <artifactId>maven-javadoc-plugin</artifactId>-->
-            <!--                <version>3.2.0</version>-->
-            <!--                <executions>-->
-            <!--                    <execution>-->
-            <!--                        <id>attach-javadocs</id>-->
-            <!--                        <goals>-->
-            <!--                            <goal>jar</goal>-->
-            <!--                        </goals>-->
-            <!--                    </execution>-->
-            <!--                </executions>-->
-            <!--            </plugin>-->
-            <!-- resources plugin,Maven 资源插件 -->
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
@@ -150,68 +101,7 @@
                     <showWarnings>true</showWarnings>
                 </configuration>
             </plugin>
-            <!-- gpg plugin,用于签名认证 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.6</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <!--staging puglin,用于自动执行发布阶段(免手动)-->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.6.7</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <serverId>woodpecker</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
-            </plugin>
-            <!-- release plugin,用于发布到release仓库部署插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.3</version>
-            </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
-                <executions>
-                    <execution>
-                        <id>attach-javadocs</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                        <configuration>
-                            <additionalJOption>-Xdoclint:none</additionalJOption>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
-
-    <!-- 这里引入 Settings.xml 中设置的用户名、密码 -->
-    <distributionManagement>
-        <snapshotRepository>
-            <id>woodpecker</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>woodpecker</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
-    </distributionManagement>
 </project>
