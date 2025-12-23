@@ -19,39 +19,42 @@ public class SSLContextFactories {
 
     // To reuse the connection, settings on the underlying socket must use the exact same objects.
 
-    private static final SSLContext sslContextLazy = _getTrustAllSSLContext();
-
     public static SSLContext _getTrustAllSSLContext() {
+        if (!Boolean.getBoolean("woodpecker.ssl.insecure")) {
+            throw new SecurityException(
+                "Insecure SSL context disabled by default. " +
+                "Enable explicitly with -Dwoodpecker.ssl.insecure=true"
+            );
+        }
+
         TrustManager trustManager = new TrustAllTrustManager();
-        SSLContext sslContext;
         try {
-            sslContext = SSLContext.getInstance("SSL");
+            SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, new TrustManager[]{trustManager}, new SecureRandom());
+            return sslContext;
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new RequestsException(e);
         }
-
-        return sslContext;
     }
+
 
 
     public static SSLContext getTrustAllSSLContext() {
-        return sslContextLazy;
+        return _getTrustAllSSLContext();
     }
+
 
     private static final ConcurrentMap<KeyStore, SSLContext> map = new ConcurrentHashMap<>();
 
     private static SSLContext _getCustomSSLContext(KeyStore keyStore) {
         TrustManager trustManager = new CustomCertTrustManager(keyStore);
-        SSLContext sslContext;
         try {
-            sslContext = SSLContext.getInstance("SSL");
+            SSLContext sslContext = SSLContext.getInstance("TLS");
             sslContext.init(null, new TrustManager[]{trustManager}, new SecureRandom());
+            return sslContext;
         } catch (NoSuchAlgorithmException | KeyManagementException e) {
             throw new RequestsException(e);
         }
-
-        return sslContext;
     }
 
     public static SSLContext getCustomTrustSSLContext(KeyStore keyStore) {
